@@ -378,7 +378,7 @@ class BitcoinCash(BitcoinMixin, Coin):
     TX_COUNT_HEIGHT = 557037
     TX_PER_BLOCK = 400
     PEERS = [
-        'bch.electrumx.cash s t',
+        'sv.electrumx.cash s t',
         'sv1.hsmiths.com t60003 s60004',
         'satoshi.vision.cash s',
         'electroncash.cascharia.com s t',
@@ -660,6 +660,26 @@ class LitecoinTestnet(Litecoin):
         'electrum-ltc.bysh.me s t',
         'electrum.ltc.xurious.com s t',
     ]
+
+
+class LitecoinRegtest(LitecoinTestnet):
+    NET = "regtest"
+    GENESIS_HASH = ('530827f38f93b43ed12af0b3ad25a288'
+                    'dc02ed74d6d7857862df51fc56c416f9')
+    PEERS = []
+    TX_COUNT = 1
+    TX_COUNT_HEIGHT = 1
+
+
+class BitcoinCashABCRegtest(BitcoinTestnetMixin, Coin):
+    NAME = "BitcoinCashABC"
+    NET = "regtest"
+    PEERS = []
+    GENESIS_HASH = ('0f9188f13cb7b2c71f2a335e3a4fc328'
+                    'bf5beb436012afca590b1a11466e2206')
+    TX_COUNT = 1
+    TX_COUNT_HEIGHT = 1
+    BLOCK_PROCESSOR = block_proc.LTORBlockProcessor
 
 
 class Viacoin(AuxPowMixin, Coin):
