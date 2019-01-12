@@ -1572,6 +1572,17 @@ class SplTest(KomodoMixin, EquihashMixin, Coin):
     REORG_LIMIT = 800
     PEERS = []
 
+class Lumber(KomodoMixin, EquihashMixin, Coin):
+    NAME = "LUMBER"
+    SHORTNAME = "LUMBER"
+    NET = "mainnet"
+    TX_COUNT = 100
+    TX_COUNT_HEIGHT = 100
+    TX_PER_BLOCK = 2
+    RPC_PORT = 26301
+    REORG_LIMIT = 800
+    PEERS = []
+
 class Verus(KomodoMixin, EquihashMixin, Coin):
     NAME = "Verus"
     SHORTNAME = "VRSC"
