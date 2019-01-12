@@ -36,7 +36,6 @@ import struct
 from decimal import Decimal
 from hashlib import sha256
 from functools import partial
-import base64
 
 import electrumx.lib.util as util
 from electrumx.lib.hash import Base58, hash160, double_sha256, hash_to_hex_str
@@ -260,16 +259,6 @@ class Coin(object):
         '''
         return Decimal(value) / cls.VALUE_PER_COIN
 
-    @classmethod
-    def electrum_header(cls, header, height):
-        h = dict(zip(cls.HEADER_VALUES, cls.HEADER_UNPACK(header)))
-        # Add the height that is not present in the header itself
-        h['block_height'] = height
-        # Convert bytes to str
-        h['prev_block_hash'] = hash_to_hex_str(h['prev_block_hash'])
-        h['merkle_root'] = hash_to_hex_str(h['merkle_root'])
-        return h
-
 
 class AuxPowMixin(object):
     STATIC_BLOCK_HEADERS = False
@@ -294,18 +283,6 @@ class EquihashMixin(object):
     HEADER_VALUES = ('version', 'prev_block_hash', 'merkle_root', 'reserved',
                      'timestamp', 'bits', 'nonce')
     HEADER_UNPACK = struct.Struct('< I 32s 32s 32s I I 32s').unpack_from
-
-    @classmethod
-    def electrum_header(cls, header, height):
-        h = dict(zip(cls.HEADER_VALUES, cls.HEADER_UNPACK(header)))
-        # Add the height that is not present in the header itself
-        h['block_height'] = height
-        # Convert bytes to str
-        h['prev_block_hash'] = hash_to_hex_str(h['prev_block_hash'])
-        h['merkle_root'] = hash_to_hex_str(h['merkle_root'])
-        h['reserved'] = hash_to_hex_str(h['reserved'])
-        h['nonce'] = hash_to_hex_str(h['nonce'])
-        return h
 
     @classmethod
     def block_header(cls, block, height):
@@ -450,13 +427,6 @@ class BitcoinGold(EquihashMixin, BitcoinMixin, Coin):
         else:
             return double_sha256(header[:68] + header[100:112])
 
-    @classmethod
-    def electrum_header(cls, header, height):
-        h = super().electrum_header(header, height)
-        h['reserved'] = hash_to_hex_str(header[72:100])
-        h['solution'] = hash_to_hex_str(header[140:])
-        return h
-
 
 class BitcoinGoldTestnet(BitcoinGold):
     FORK_HEIGHT = 1
@@ -497,6 +467,19 @@ class BitcoinGoldRegtest(BitcoinGold):
     GENESIS_HASH = ('0f9188f13cb7b2c71f2a335e3a4fc328'
                     'bf5beb436012afca590b1a11466e2206')
     PEERS = []
+
+
+class BitcoinDiamond(BitcoinSegwit, Coin):
+    NAME = "BitcoinDiamond"
+    SHORTNAME = "BCD"
+    TX_VERSION = 12
+    TX_COUNT = 274277819
+    TX_COUNT_HEIGHT = 498678
+    TX_PER_BLOCK = 50
+    REORG_LIMIT = 1000
+    PEERS = []
+    VALUE_PER_COIN = 10000000
+    DESERIALIZER = lib_tx.DeserializerBitcoinDiamondSegWit
 
 
 class Emercoin(Coin):
@@ -1049,12 +1032,6 @@ class FairCoin(Coin):
         else:
             return Block(raw_block, cls.block_header(raw_block, height), [])
 
-    @classmethod
-    def electrum_header(cls, header, height):
-        h = super().electrum_header(header, height)
-        h['payload_hash'] = hash_to_hex_str(h['payload_hash'])
-        return h
-
 
 class Zcash(EquihashMixin, Coin):
     NAME = "Zcash"
@@ -1103,13 +1080,6 @@ class SnowGem(EquihashMixin, Coin):
     RPC_PORT = 16112
     REORG_LIMIT = 800
     CHUNK_SIZE = 200
-
-    @classmethod
-    def electrum_header(cls, header, height):
-        h = super().electrum_header(header, height)
-        h['n_solution'] = base64.b64encode(lib_tx.Deserializer(
-            header, start=140)._read_varbytes()).decode('utf8')
-        return h
 
 
 class BitcoinZ(EquihashMixin, Coin):
@@ -2228,14 +2198,6 @@ class Decred(Coin):
         else:
             return Block(raw_block, cls.block_header(raw_block, height), [])
 
-    @classmethod
-    def electrum_header(cls, header, height):
-        h = super().electrum_header(header, height)
-        h['stake_root'] = hash_to_hex_str(h['stake_root'])
-        h['final_state'] = hash_to_hex_str(h['final_state'])
-        h['extra_data'] = hash_to_hex_str(h['extra_data'])
-        return h
-
 
 class DecredTestnet(Decred):
     SHORTNAME = "tDCR"
@@ -2322,13 +2284,6 @@ class Xuez(Coin):
             return xevan_hash.getPoWHash(header[:80])
         else:
             return xevan_hash.getPoWHash(header)
-
-    @classmethod
-    def electrum_header(cls, header, height):
-        h = super().electrum_header(header, height)
-        if h['version'] > 1:
-            h['nAccumulatorCheckpoint'] = hash_to_hex_str(header[80:])
-        return h
 
 
 class Pac(Coin):
@@ -2516,12 +2471,6 @@ class Minexcoin(EquihashMixin, Coin):
         'elex01-ams.turinex.eu s t',
         'eu.minexpool.nl s t'
     ]
-
-    @classmethod
-    def electrum_header(cls, header, height):
-        h = super().electrum_header(header, height)
-        h['solution'] = hash_to_hex_str(header[cls.HEADER_SIZE_NO_SOLUTION:])
-        return h
 
     @classmethod
     def block_header(cls, block, height):
