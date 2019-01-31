@@ -1576,12 +1576,20 @@ class Lumber(KomodoMixin, EquihashMixin, Coin):
     NAME = "LUMBER"
     SHORTNAME = "LUMBER"
     NET = "mainnet"
-    TX_COUNT = 100
-    TX_COUNT_HEIGHT = 100
+    TX_COUNT = 55000
+    TX_COUNT_HEIGHT = 42000
     TX_PER_BLOCK = 2
     RPC_PORT = 26301
     REORG_LIMIT = 800
     PEERS = []
+
+    @classmethod
+    def header_hash(cls, header):
+        if cls.header_prevhash(header) == bytes([0] * 32):
+            return double_sha256(header)
+        else:
+            return verus_hash(header)
+
 
 class Verus(KomodoMixin, EquihashMixin, Coin):
     NAME = "Verus"
