@@ -1561,14 +1561,14 @@ class KMDice(KomodoMixin, EquihashMixin, Coin):
     REORG_LIMIT = 800
     PEERS = []
 
-class SplTest(KomodoMixin, EquihashMixin, Coin):
-    NAME = "SplTest"
-    SHORTNAME = "SPLTEST"
+class Koinon(KomodoMixin, EquihashMixin, Coin):
+    NAME = "Koinon"
+    SHORTNAME = "KOIN"
     NET = "mainnet"
     TX_COUNT = 100
     TX_COUNT_HEIGHT = 100
     TX_PER_BLOCK = 2
-    RPC_PORT = 41372
+    RPC_PORT = 10702
     REORG_LIMIT = 800
     PEERS = []
 
