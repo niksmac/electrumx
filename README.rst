@@ -39,8 +39,8 @@ Supported Coins
 - BitcoinZ - BTCZ
 - Bitcore - BTX
 - Bitzeny - ZNY
-- Blackcoin - BLK 
-- CanadaeCoin - CDN 
+- Blackcoin - BLK
+- CanadaeCoin - CDN
 - Chips - CHIPS
 - CivX - CIVX
 - ColossusXT - COLX
@@ -60,6 +60,7 @@ Supported Coins
 - Groestlcoin - GRS
 - HODLcoin - HODL
 - Hush - HUSH
+- Koinon - KOIN
 - Komodo - KMD
 - Koto - KOTO
 - Litecoin - LTC
@@ -74,7 +75,7 @@ Supported Coins
 - Namecoin - NMC
 - Neblio - NEBL
 - NewYorkcoin - NYC
-- Noir - NOR 
+- Noir - NOR
 - Paccoin - PAC
 - Peercoin - PPC
 - Pivx - PIVX
